@@ -1,0 +1,22 @@
+{
+  "name": "contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "hardhat compile",
+    "test": "hardhat test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^4.0.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^26.6.6",
+    "hardhat": "^3.21.2",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
+}

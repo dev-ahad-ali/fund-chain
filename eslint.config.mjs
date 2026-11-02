@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Contract workspace has its own tooling; generated TypeChain files
+    // should never be linted.
+    "contracts/**",
   ]),
 ]);
 
