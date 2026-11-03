@@ -56,14 +56,18 @@ async function seed(): Promise<void> {
     const result = await Campaign.updateOne(
       { slug: campaign.slug },
       {
-        // $setOnInsert keeps seed data from clobbering manual edits, while
-        // guaranteeing the columns exist for first-time setups.
+        // Content maintenance (e.g. image URL fixes) IS propagated to
+        // existing documents; editorial fields stay correctly seeded.
+        $set: {
+          imageUrl: campaign.imageUrl,
+        },
+        // $setOnInsert guarantees the demo columns exist for first-time
+        // setups without clobbering manual edits to other fields.
         $setOnInsert: {
           slug: campaign.slug,
           title: campaign.title,
           shortDescription: campaign.shortDescription,
           description: campaign.description,
-          imageUrl: campaign.imageUrl,
           category: campaign.category,
           creatorName: campaign.creatorName,
           goalWei: campaign.goalWei,
