@@ -4,11 +4,15 @@ import { configVariable, defineConfig } from "hardhat/config";
 /**
  * Hardhat 3 configuration for the FundChain demo contract.
  *
- * Secrets are provided via the Hardhat keystore (`npx hardhat keystore set`),
- * never committed to source control:
+ * Sepolia secrets ("SEPOLIA_RPC_URL", "SEPOLIA_DEPLOYER_PRIVATE_KEY") are
+ * resolved in this order by Hardhat:
+ *   1. Real environment variables (shell, CI, or `contracts/.env.local`).
+ *      Example: SEPOLIA_RPC_URL=... SEPOLIA_DEPLOYER_PRIVATE_KEY=... \
+ *        npx hardhat run scripts/deploy.ts --network sepolia
+ *   2. The Hardhat keystore (`npx hardhat keystore set SEPOLIA_RPC_URL`).
  *
- *   SEPOLIA_RPC_URL            — JSON-RPC endpoint for the Sepolia network
- *   SEPOLIA_DEPLOYER_PRIVATE_KEY — funded testnet-only deployer account
+ * Never commit these values. The deployer key must belong to a throwaway,
+ * testnet-only account funded with Sepolia ETH.
  */
 export default defineConfig({
   plugins: [hardhatToolboxMochaEthersPlugin],
