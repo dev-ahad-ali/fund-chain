@@ -29,6 +29,8 @@ function CampaignGridSkeleton() {
 }
 
 export async function CampaignGrid() {
+  // Cached via `use cache` in lib/campaigns.ts: the prerendered shell
+  // includes the grid, so navigating back to "/" is instant.
   const campaigns = await getPublishedCampaigns();
 
   if (campaigns.length === 0) {

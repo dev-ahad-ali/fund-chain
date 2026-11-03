@@ -1,8 +1,7 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CampaignGridSection } from "@/components/campaigns/campaign-grid";
 import Link from "next/link";
-import { ArrowRight, FlaskConical } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function HomePage() {
     return (

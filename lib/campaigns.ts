@@ -1,4 +1,8 @@
-import { connection } from "next/server";
+import "server-only";
+import {
+  cacheLife,
+  cacheTag,
+} from "next/cache";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Campaign, type CampaignDocument } from "@/models/Campaign";
 import { Donation } from "@/models/Donation";
@@ -13,8 +17,12 @@ import type { CampaignSummary, CampaignView } from "@/lib/types";
  * - Raised totals come only from verified Donation records; they are joined
  *   here and are never seeded or mocked.
  *
- * `await connection()` opts reads out of build-time prerendering (Cache
- * Components) so totals are computed at request time.
+ * Caching: both reads use the `use cache` directive so repeated navigation
+ * (e.g. returning to the homepage) is served instantly. Every entry is
+ * tagged "campaigns"; `POST /api/donations/verify` calls revalidateTag
+ * after recording a donation, so fresh verified totals always replace the
+ * cached values. The short cacheLife bounds staleness from other sources
+ * (e.g. seeding new campaigns via re-seed scripts) between revalidations.
  */
 
 function toCampaignView(doc: CampaignDocument): CampaignView {
@@ -84,7 +92,10 @@ function withVerifiedTotals(
 export async function getPublishedCampaigns(): Promise<
   CampaignSummary[]
 > {
-  await connection();
+  "use cache";
+  cacheTag("campaigns");
+  cacheLife("minutes");
+
   await connectToDatabase();
 
   const [campaigns, totals] = await Promise.all([
@@ -98,8 +109,9 @@ export async function getPublishedCampaigns(): Promise<
 export async function getPublishedCampaignBySlug(
   rawSlug: string,
 ): Promise<CampaignSummary | null> {
-  await connection();
-  await connectToDatabase();
+  "use cache";
+  cacheTag("campaigns", `campaign:${rawSlug}`);
+  cacheLife("minutes");
 
   // Slugs are stored lowercase; reject anything that is not a valid slug
   // shape instead of querying free-form strings.
@@ -107,6 +119,8 @@ export async function getPublishedCampaignBySlug(
   if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
     return null;
   }
+
+  await connectToDatabase();
 
   const [campaign, totals] = await Promise.all([
     Campaign.findOne({ slug, isPublished: true }).exec(),

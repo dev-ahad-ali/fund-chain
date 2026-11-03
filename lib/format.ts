@@ -76,4 +76,26 @@ export function formatDeadline(iso: string): { text: string; ended: boolean } {
   return { text, ended };
 }
 
+/**
+ * Prerender-safe variant used inside `use cache`-backed components (card /
+ * list rows): no `Date.now()` is consulted, so the static shell can be
+ * prerendered with the cached campaign data. The "ended" flag is simply not
+ * computed here; static label shows the absolute deadline text.
+ */
+export function formatDeadlineStatic(iso: string): {
+  text: string;
+  ended: false;
+} {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return { text: "—", ended: false };
+  }
+  const text = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  return { text, ended: false };
+}
+
 export const WEI_DECIMAL_COUNT = WEI_DECIMALS;

@@ -5,7 +5,7 @@ import { WalletButton } from "@/components/wallet/wallet-button";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Campaigns" },
+  { href: "/campaigns", label: "Campaigns" },
   { href: "/about", label: "About" },
 ];
 

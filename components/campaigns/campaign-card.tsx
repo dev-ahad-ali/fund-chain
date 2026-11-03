@@ -4,15 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
+  formatDeadlineStatic,
   formatEthAmount,
-  formatDeadline,
   progressPercent,
 } from "@/lib/format";
 import type { CampaignSummary } from "@/lib/types";
 
 export function CampaignCard({ campaign }: { campaign: CampaignSummary }) {
   const percent = progressPercent(campaign.raisedWei, campaign.goalWei);
-  const deadline = formatDeadline(campaign.deadline);
+  const deadline = formatDeadlineStatic(campaign.deadline);
 
   return (
     <Link
@@ -36,7 +36,7 @@ export function CampaignCard({ campaign }: { campaign: CampaignSummary }) {
           <div className="flex items-center justify-between gap-2">
             <Badge variant="secondary">{campaign.category}</Badge>
             <span className="text-xs text-muted-foreground">
-              {deadline.ended ? "Ended" : `Ends ${deadline.text}`}
+              Ends {deadline.text}
             </span>
           </div>
           <CardTitle className="text-base leading-snug group-hover:underline">

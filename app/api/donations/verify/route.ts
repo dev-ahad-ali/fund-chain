@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { ethers } from "ethers";
 import { campaignIdForSlug } from "@/lib/ethers/campaign-id";
 import {
@@ -279,6 +280,11 @@ export async function POST(request: Request): Promise<NextResponse<VerifyDonatio
       chainId: SEPOLIA_CHAIN_ID,
       status: "confirmed",
     });
+
+    // Serve fresh verified totals immediately despite the cached campaign
+    // reads (homepage list/grid + campaign detail). 'max' drops the cached
+    // entries so the next request recomputes from MongoDB.
+    revalidateTag("campaigns", "max");
 
     return NextResponse.json({
       ok: true,
